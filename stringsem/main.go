@@ -8,7 +8,7 @@ import (
 )
 
 func IsGood(msg string) bool {
-    score = getSentiment(msg)
+    score, _ := getSentiment(msg)
 
     if score >= 0 {
         return true
@@ -18,10 +18,10 @@ func IsGood(msg string) bool {
 }
 
 func IsHappy(msg []string) bool {
-    happyScore := 0
+    happyScore := float32(0.0)
 
-    for _, item := range string {
-        score, magnitude = getSentiment(item)
+    for _, item := range msg {
+        score, magnitude := getSentiment(item)
         happyScore += score*magnitude
     }
 
@@ -32,7 +32,7 @@ func IsHappy(msg []string) bool {
     }
 }
 
-func getSentiment(msg string) (double double) {
+func getSentiment(msg string) (float32, float32) {
     ctx := context.Background()
 
     client, err := language.NewClient(ctx)
