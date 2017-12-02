@@ -5,9 +5,15 @@ import "./twPull"
 import "./stringsem"
 import "github.com/saintpete/twilio-go"
 import "time"
+import (
+	"github.com/barcatfigaro/moodmessage/search"
+)
 
 func main() {
     now := time.Now()
+	spider := search.NewSpider()
+	search.RunSpider(spider, "https://reddit.com/")
+
     messages := []twilio.Message{}
     newmessages := []string{}
     for {
@@ -21,5 +27,5 @@ func main() {
             }
         }
     }
-
 }
+
