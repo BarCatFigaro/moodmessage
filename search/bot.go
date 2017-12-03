@@ -46,11 +46,11 @@ type Announcer struct{ bot reddit.Bot }
 // Post is called when there is a new post
 func (a *Announcer) Post(post *reddit.Post) error {
     m_messages := <-channel
-    m_post := post.Title + "\n" + post.SelfText
+    m_post := *post.Title + "\n" + *post.SelfText
 	if !stringsem.IsGood(m_post) {
 		return a.bot.SendMessage(
 			post.Author,
-			fmt.Sprintf("MoodMessage: %s", post.Title),
+			fmt.Sprintf("MoodMessage: %s", m_post),
             m_messages[len(m_messages)-1],
 		)
 	}
