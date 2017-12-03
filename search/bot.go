@@ -14,6 +14,7 @@ import (
 
 //var messages *[]string
 var channel chan []string
+var m_messages []string
 // NewBot creates a new reddit bot instance
 func NewBot(c chan []string) reddit.Bot {
 	bot, err := reddit.NewBotFromAgentFile("search/agentfile.template", time.Second)
@@ -27,13 +28,15 @@ func NewBot(c chan []string) reddit.Bot {
 
 // RunBot runs the bot
 func RunBot(bot reddit.Bot, cfg graw.Config) {
-	stop, wait, err := graw.Run(&Announcer{}, bot, cfg)
+    stop, wait, err := graw.Run(&Announcer{bot: bot}, bot, cfg)
 
 	_ = stop
 
 	if err != nil {
 		fmt.Printf("graw run starting error: %v\n", err)
 	}
+
+
 
 	if err := wait(); err != nil {
 		fmt.Printf("graw run encountered an error %v\n", err)
@@ -45,8 +48,16 @@ type Announcer struct{ bot reddit.Bot }
 
 // Post is called when there is a new post
 func (a *Announcer) Post(post *reddit.Post) error {
-    m_messages := <-channel
-    m_post := *post.Title + "\n" + *post.SelfText
+    fmt.Println(post.Title)
+
+    select {
+    case m_messages = <-channel:
+        fmt.Println("recievedmsg")
+    default:
+        fmt.Println("nomsgrecieved")
+    }
+    m_post := post.Title + "\n" + post.SelfText
+    fmt.Println(m_post)
 	if !stringsem.IsGood(m_post) {
 		return a.bot.SendMessage(
 			post.Author,

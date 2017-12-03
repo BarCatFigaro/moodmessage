@@ -14,8 +14,10 @@ func IsGood(msg string) bool {
     fmt.Printf("Score: %f, Magnitude: %f\n",score,magnitude)
 
     if score >= 0.5 && magnitude >= 0.5 {
+        fmt.Println("good")
         return true
     } else {
+        fmt.Println("bad")
         return false
     }
 }
