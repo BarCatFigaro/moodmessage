@@ -51,7 +51,7 @@ func (a *Announcer) Post(post *reddit.Post) error {
 		return a.bot.SendMessage(
 			post.Author,
 			fmt.Sprintf("MoodMessage: %s", post.Title),
-            m_messages[len(m_message)-1],
+            m_messages[len(m_messages)-1],
 		)
 	}
 
