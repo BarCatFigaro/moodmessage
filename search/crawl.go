@@ -33,7 +33,6 @@ func (e *Extender) Visit(ctx *gocrawl.URLContext, res *http.Response, doc *goque
 
 // Filter only crawled reddit pages
 func (e *Extender) Filter(ctx *gocrawl.URLContext, isVisited bool) bool {
-	fmt.Printf("normalized URL: %s\n", ctx.NormalizedURL().String())
 	return !isVisited && rxOk.MatchString(ctx.NormalizedURL().String())
 }
 
@@ -45,7 +44,7 @@ func NewSpider() *gocrawl.Crawler {
 	opts.UserAgent = "Mozilla/5.0 (compatible; moodmessage/1.0)"
 	opts.CrawlDelay = 1 * time.Second
 	opts.LogFlags = gocrawl.LogAll
-	opts.MaxVisits = 50
+	opts.MaxVisits = 3
 
 	c := gocrawl.NewCrawlerWithOptions(opts)
 

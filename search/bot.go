@@ -5,14 +5,19 @@ import (
 	"log"
 	"time"
 
+	"github.com/barcatfigaro/moodmessage/stringsem"
+
 	"github.com/turnage/graw"
 
 	"github.com/turnage/graw/reddit"
 )
 
+var messages *[]string
+
 // NewBot creates a new reddit bot instance
-func NewBot() reddit.Bot {
-	bot, err := reddit.NewBotFromAgentFile("search/agentfile.template", 5*time.Second)
+func NewBot(arr *[]string) reddit.Bot {
+	bot, err := reddit.NewBotFromAgentFile("search/agentfile.template", time.Second)
+	messages = arr
 	if err != nil {
 		log.Fatalf("could not start bot: %v\n", err)
 	}
@@ -35,16 +40,26 @@ func RunBot(bot reddit.Bot, cfg graw.Config) {
 }
 
 // Announcer is a handler for Run
-type Announcer struct{}
+type Announcer struct{ bot reddit.Bot }
 
 // Post is called when there is a new post
 func (a *Announcer) Post(post *reddit.Post) error {
-	fmt.Printf("%s posted: %s and created %d\n", post.Author, post.SelfText, post.CreatedUTC)
+	if len(*messages) == 0 {
+		return nil
+	}
+	if stringsem.IsGood((*messages)[len(*messages)-1]) {
+		return a.bot.SendMessage(
+			post.Author,
+			fmt.Sprintf("MoodMessage: %s", post.Title),
+			(*messages)[len(*messages)-1],
+		)
+	}
+
 	return nil
 }
 
 // Comment implements Comment handler
 func (a *Announcer) Comment(post *reddit.Comment) error {
-	fmt.Printf("%s posted: %s", post.Author, post.Body)
+	fmt.Printf("COMMENT: %s posted: %s", post.Author, post.Body)
 	return nil
 }
