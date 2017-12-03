@@ -45,10 +45,12 @@ func main() {
 		search.RunSpider(spider, "https://www.reddit.com/r/UBC/")
 	*/
 
+    c := make(chan []string)
+
 	http.HandleFunc("/messages", handler)
 	go http.ListenAndServe(":8080", nil)
 
-	bot := search.NewBot(&goodmessages)
+	bot := search.NewBot(c)
 	cfg := search.NewConfig()
 	go search.RunBot(bot, cfg)
 
@@ -62,6 +64,7 @@ func main() {
 			if stringsem.IsGood(msg) {
 				fmt.Println("that was a good message")
 				goodmessages = append(goodmessages, msg)
+                c <- goodmessages
 			} else {
 				fmt.Println("that was bad message")
 			}

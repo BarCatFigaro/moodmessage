@@ -12,15 +12,16 @@ import (
 	"github.com/turnage/graw/reddit"
 )
 
-var messages *[]string
-
+//var messages *[]string
+var channel chan []string
 // NewBot creates a new reddit bot instance
-func NewBot(arr *[]string) reddit.Bot {
+func NewBot(c chan []string) reddit.Bot {
 	bot, err := reddit.NewBotFromAgentFile("search/agentfile.template", time.Second)
-	messages = arr
+//	messages = arr
 	if err != nil {
 		log.Fatalf("could not start bot: %v\n", err)
 	}
+    channel = c
 	return bot
 }
 
@@ -44,14 +45,13 @@ type Announcer struct{ bot reddit.Bot }
 
 // Post is called when there is a new post
 func (a *Announcer) Post(post *reddit.Post) error {
-	if len(*messages) == 0 {
-		return nil
-	}
-	if stringsem.IsGood((*messages)[len(*messages)-1]) {
+    m_messages := <-channel
+    m_post := post.Title + "\n" + post.SelfText
+	if !stringsem.IsGood(m_post) {
 		return a.bot.SendMessage(
 			post.Author,
 			fmt.Sprintf("MoodMessage: %s", post.Title),
-			(*messages)[len(*messages)-1],
+            m_messages[len(m_message)-1],
 		)
 	}
 
