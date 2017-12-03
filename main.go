@@ -1,13 +1,13 @@
 package main
 
-import "fmt"
-import "./twPull"
-import "./stringsem"
-import "github.com/saintpete/twilio-go"
-import "time"
-import "net/http"
 import (
+	"fmt"
+	"time"
+
 	"github.com/barcatfigaro/moodmessage/search"
+	"github.com/barcatfigaro/moodmessage/stringsem"
+	"github.com/barcatfigaro/moodmessage/twPull"
+	twilio "github.com/saintpete/twilio-go"
 )
 import "encoding/json"
 
@@ -38,9 +38,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    now := time.Now()
+	now := time.Now()
 	spider := search.NewSpider()
-	search.RunSpider(spider, "https://reddit.com/")
+	search.RunSpider(spider, "https://www.reddit.com/r/UBC/")
 
     http.HandleFunc("/messages", handler)
     go http.ListenAndServe(":8080",nil)
@@ -61,4 +61,3 @@ func main() {
         }
     }
 }
-
