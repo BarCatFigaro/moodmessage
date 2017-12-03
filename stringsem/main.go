@@ -5,12 +5,15 @@ import (
     "context"
     languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
     "log"
+    "fmt"
 )
 
 func IsGood(msg string) bool {
-    score, _ := getSentiment(msg)
+    score, magnitude := getSentiment(msg)
 
-    if score >= 0 {
+    fmt.Printf("Score: %f, Magnitude: %f\n",score,magnitude)
+
+    if score >= 0.5 && magnitude >= 0.5 {
         return true
     } else {
         return false
