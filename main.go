@@ -45,7 +45,7 @@ func main() {
 		search.RunSpider(spider, "https://www.reddit.com/r/UBC/")
 	*/
 
-    c := make(chan []string)
+    c := make(chan []string, 100)
 
 	http.HandleFunc("/messages", handler)
 	go http.ListenAndServe(":8080", nil)
